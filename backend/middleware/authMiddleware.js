@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from "./asyncHandler.js";
 import User from "../models/userModel.js";
-import config from "config";
+import query from "../config/db.js";
 
 // *** Protect routes ==> to protect the routes from unauthorized access
 const protect = asyncHandler(async (req, res, next) => {
@@ -11,11 +11,14 @@ const protect = asyncHandler(async (req, res, next) => {
   token = req.cookies.jwt; // jwt ==> name of the cookie that we set in controller
   if (token) {
     try {
-      const decoded = jwt.verify(token, config.get("jwtPrivateKey")); // decode the token  (in this case the userId)
+      const decoded = jwt.verify(token, "JWT_SECRET"); // decode the token  (in this case the userId)
       // here decoded is an object which contains the userId
 
       // todo : use appropriate SQL query ==>
-      req.user = await User.findById(decoded.userId).select("-password"); // find the user by id + exclude the password field, and finally add the user to the request object ☝️
+      // req.user = await User.findById(decoded.userId).select("-password"); // find the user by id + exclude the password field, and finally add the user to the request object ☝️
+      req.user = await query("SELECT * FROM User_Auth WHERE user_id = ?", [
+        decoded.userId,
+      ]);
       next(); // go to the next middleware
     } catch (error) {
       console.log(error);

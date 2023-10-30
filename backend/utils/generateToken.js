@@ -3,7 +3,7 @@ import config from "config";
 
 const generateToken = (res, userId) => {
   // Create JWT (JSON Web Token) ==> This will be used to authenticate the user
-  const token = jwt.sign({ userId: userId }, config.get("jwtPrivateKey"), {
+  const token = jwt.sign({ userId: userId }, "JWT_SECRET", {
     expiresIn: "30d",
   }); // here first arg is payload which is used to identify the user
 
