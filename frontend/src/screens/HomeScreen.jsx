@@ -40,7 +40,7 @@ const HomeScreen = () => {
       ) : (
         <>
           <Meta title="DB_Shop" />
-          <h1>Latest Products</h1>
+          <h1 style={{ color: "white" }}>Latest Products</h1>
           <Row>
             {data.pagedProducts.map((product) => (
               <Col key={product.product_id} sm={12} md={6} lg={4} xl={3}>

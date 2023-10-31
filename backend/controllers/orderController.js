@@ -60,6 +60,92 @@ const getMyOrders = asyncHandler(async (req, res) => {
   res.status(201).json(orders);
 });
 
+// @desc    Get the orders for the logged in user
+// @route   GET /api/orders/myorders
+// @access  Private
+// TODO: completed
+const getPaymentMethods = asyncHandler(async (req, res) => {
+  // Todo: Replace this MongoDB-specific code with MySQL code for retrieving orders by user ID
+  // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
+
+  //   const orders = await Order.find({ user: req.user.user_id });
+  const payment_methods = await query("SELECT * FROM payment_method", []);
+  res.status(201).json(payment_methods);
+});
+
+// @desc    Get the orders for the logged in user
+// @route   GET /api/orders/myorders
+// @access  Private
+// TODO: completed
+const getDeliveryMethods = asyncHandler(async (req, res) => {
+  // Todo: Replace this MongoDB-specific code with MySQL code for retrieving orders by user ID
+  // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
+
+  //   const orders = await Order.find({ user: req.user.user_id });
+  const delivery_methods = await query("SELECT * FROM delivery_method", []);
+  res.status(201).json(delivery_methods);
+});
+
+// @desc    Get the orders for the logged in user
+// @route   GET /api/orders/myorders
+// @access  Private
+// TODO: completed
+const getCities = asyncHandler(async (req, res) => {
+  // Todo: Replace this MongoDB-specific code with MySQL code for retrieving orders by user ID
+  // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
+
+  //   const orders = await Order.find({ user: req.user.user_id });
+  const cities = await query("SELECT * FROM city", []);
+  res.status(201).json(cities);
+});
+
+// @desc    Get the orders for the logged in user
+// @route   GET /api/orders/myorders
+// @access  Private
+// TODO: completed
+const getDeliveryMethodById = asyncHandler(async (req, res) => {
+  // Todo: Replace this MongoDB-specific code with MySQL code for retrieving orders by user ID
+  // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
+
+  //   const orders = await Order.find({ user: req.user.user_id });
+  const delivery_method = await query(
+    "SELECT * FROM delivery_method WHERE delivery_method_id = ?",
+    [parseInt(req.params.id)]
+  );
+  res.status(201).json(delivery_method);
+});
+
+// @desc    Get the orders for the logged in user
+// @route   GET /api/orders/myorders
+// @access  Private
+// TODO: completed
+const getPaymentMethodById = asyncHandler(async (req, res) => {
+  // Todo: Replace this MongoDB-specific code with MySQL code for retrieving orders by user ID
+  // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
+
+  //   const orders = await Order.find({ user: req.user.user_id });
+  const payment_method = await query(
+    "SELECT * FROM payment_method WHERE payment_method_id = ?",
+    [parseInt(req.params.id)]
+  );
+  res.status(201).json(payment_method);
+});
+
+// @desc    Get the orders for the logged in user
+// @route   GET /api/orders/myorders
+// @access  Private
+// TODO: completed
+const getCityById = asyncHandler(async (req, res) => {
+  // Todo: Replace this MongoDB-specific code with MySQL code for retrieving orders by user ID
+  // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
+
+  //   const orders = await Order.find({ user: req.user.user_id });
+  const city = await query("SELECT * FROM city WHERE city_id = ?", [
+    parseInt(req.params.id),
+  ]);
+  res.status(201).json(city);
+});
+
 // @desc    Get order by ID
 // @route   GET /api/orders/:id
 // @access  Private
@@ -149,4 +235,10 @@ export {
   updateOrderToPaid,
   updateOrderToDelivered,
   getOrders,
+  getPaymentMethods,
+  getDeliveryMethods,
+  getCities,
+  getPaymentMethodById,
+  getDeliveryMethodById,
+  getCityById,
 };
