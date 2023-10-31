@@ -138,7 +138,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 const getTopProducts = asyncHandler(async (req, res) => {
   // todo : use sql query to get top rated products
   const products = await query(
-    "SELECT * FROM Product JOIN Variant USING(product_id) ORDER BY product_id DESC LIMIT 10",
+    "SELECT * FROM Product JOIN Variant USING(product_id) ORDER BY product_id ASC LIMIT 10",
     []
   );
 

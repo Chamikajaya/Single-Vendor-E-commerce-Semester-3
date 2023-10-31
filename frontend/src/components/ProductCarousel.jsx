@@ -9,6 +9,17 @@ import { useGetTopProductsQuery } from "../slices/productsApiSlice";
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
 
+  const imgStyle = {
+    width: "100%",
+    height: "100%",
+  };
+
+  const divStyle = {
+    overflow: "hidden",
+    width: "100%",
+    maxHeight: "500px",
+  };
+
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -18,11 +29,14 @@ const ProductCarousel = () => {
       {products.map((product) => (
         <Carousel.Item key={product.product_id}>
           <Link to={`/product/${product.product_id}`}>
-            <Image
-              src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/New-Odyssey-Ark-2nd_1440x640_PC-NoText.webp"
-              alt={product.title}
-              fluid
-            />
+            <div style={divStyle}>
+              <Image
+                src={product.img}
+                alt={product.title}
+                fluid
+                style={imgStyle}
+              />
+            </div>
             <Carousel.Caption
               className="carousel-caption"
               style={{ fontSize: "20px" }}

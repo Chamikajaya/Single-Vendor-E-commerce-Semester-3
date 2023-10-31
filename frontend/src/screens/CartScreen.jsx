@@ -12,6 +12,7 @@ import {
 import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
 import { addToCart, removeFromCart } from "../slices/cartSlice";
+import "./cart.css";
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -32,6 +33,17 @@ const CartScreen = () => {
     navigate("/login?redirect=/shipping");
   };
 
+  const imgStyle = {
+    width: "100%",
+    height: "100%",
+  };
+
+  const divStyle = {
+    overflow: "hidden",
+    width: "100%",
+    maxHeight: "100px",
+  };
+
   return (
     <Row>
       <Col md={8}>
@@ -45,24 +57,45 @@ const CartScreen = () => {
             {cartItems.map((item) => (
               <ListGroup.Item
                 key={item.variant_id}
-                style={{ background: "white", borderRadius: "10px" }}
+                style={{
+                  background: "rgba(0, 0, 0, 0.7)",
+                  marginBottom: "0",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.355)",
+                }}
               >
                 <Row style={{ marginBottom: "20px" }}>
                   <Col md={2}>
-                    <Image
-                      src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-hero-220907.jpg.landing-big_2x.jpg"
-                      alt={item.variant_title}
-                      style={{ borderRadius: "10px" }}
-                      fluid
-                      rounded
-                    />
+                    <div style={divStyle}>
+                      <Image
+                        src={item.img}
+                        alt={item.variant_title}
+                        style={{ borderRadius: "10px" }}
+                        fluid
+                        rounded
+                        style={imgStyle}
+                      />
+                    </div>
                   </Col>
                   <Col md={3}>
-                    <Link to={`/product/${item.variant_id}`}>
-                      {item.title} - {item.variant_title}
+                    <Link
+                      to={`/product/${item.variant_id}`}
+                      style={{ textDecoration: "none", color: "white" }}
+                    >
+                      <strong style={{ fontSize: "15px" }}>{item.title}</strong>
+                      <p style={{ fontSize: "18px" }}>{item.variant_title}</p>
                     </Link>
                   </Col>
-                  <Col md={2}>${item.price}</Col>
+                  <Col md={2}>
+                    <p
+                      style={{
+                        fontSize: "20px",
+                        color: "white",
+                        fontWeight: "700",
+                      }}
+                    >
+                      ${item.price}
+                    </p>
+                  </Col>
                   <Col md={2}>
                     <Form.Control
                       as="select"
@@ -71,7 +104,7 @@ const CartScreen = () => {
                         addToCartHandler(item, Number(e.target.value))
                       }
                     >
-                      {[...Array(item.countInStock).keys()].map((x) => (
+                      {[...Array(item.quantity).keys()].map((x) => (
                         <option key={x + 1} value={x + 1}>
                           {x + 1}
                         </option>
@@ -94,9 +127,9 @@ const CartScreen = () => {
         )}
       </Col>
       <Col md={4}>
-        <Card>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
+        <Card style={{ border: "none" }}>
+          <ListGroup variant="flush" style={{ border: "none" }}>
+            <ListGroup.Item style={{ backgroundColor: "rgb(255, 148, 0)" }}>
               <h2>
                 Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                 items
@@ -106,7 +139,9 @@ const CartScreen = () => {
                 .reduce((acc, item) => acc + item.qty * item.price, 0)
                 .toFixed(2)}
             </ListGroup.Item>
-            <ListGroup.Item>
+            <ListGroup.Item
+              style={{ backgroundColor: "orange", border: "none" }}
+            >
               <Button
                 type="button"
                 className="btn-block"

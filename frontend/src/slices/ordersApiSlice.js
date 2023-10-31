@@ -67,13 +67,13 @@ export const orderApiSlice = apiSlice.injectEndpoints({
     }),
     getPaymentMethod: builder.query({
       query: (id) => ({
-        url: `${ORDERS_URL}/paymentMethod/${id}`,
+        url: `${ORDERS_URL}/paymentMethods/${id}`,
       }),
       keepUnusedDataFor: 5,
     }),
     getDeliveryMethod: builder.query({
       query: (id) => ({
-        url: `${ORDERS_URL}/deliveryMethod/${id}`,
+        url: `${ORDERS_URL}/deliveryMethods/${id}`,
       }),
       keepUnusedDataFor: 5,
     }),

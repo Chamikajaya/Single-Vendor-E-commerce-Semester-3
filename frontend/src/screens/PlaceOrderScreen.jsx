@@ -1,7 +1,15 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Card,
+  Badge,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
@@ -34,6 +42,12 @@ const PlaceOrderScreen = () => {
     navigate,
   ]);
 
+  console.log("cart", cart);
+  console.log("cartItems", cart.cartItems);
+  console.log("shippingAddress", cart.shippingAddress);
+  console.log("paymentMethod", cart.paymentMethod);
+  console.log("deliveryMethod", cart.deliveryMethod);
+
   const dispatch = useDispatch();
   const placeOrderHandler = async () => {
     try {
@@ -59,9 +73,6 @@ const PlaceOrderScreen = () => {
     error_1,
   } = useGetPaymentMethodQuery(cart.paymentMethod);
 
-  console.log("payment", cart.paymentMethod);
-  console.log("delivery", cart.deliveryMethod);
-  console.log("city", cart.shippingAddress.city);
   const {
     data: city,
     isLoading_2,
@@ -88,14 +99,40 @@ const PlaceOrderScreen = () => {
                     <strong>Address:</strong>
                     {cart.shippingAddress.address}
                   </h6>
-                  <h6>City: {city.name}</h6>
-                  <h6>Zip Code: {city.zip_code}</h6>
+                  <h6>
+                    <strong>City:</strong> {city.name}
+                  </h6>
+                  <h6>
+                    <strong>Zip Code:</strong> {city.zip_code}
+                  </h6>
                 </ListGroup.Item>
 
                 <ListGroup.Item>
                   <h2>Payment Method</h2>
                   <strong>Method: </strong>
-                  {paymentMethod}
+                  <Badge
+                    bg="secondary"
+                    style={{
+                      fontSize: "1rem", // Adjust the font size to make the badge larger
+                      padding: "0.5rem 1rem", // Adjust padding to make the badge larger
+                    }}
+                  >
+                    {paymentMethod.name}
+                  </Badge>
+                </ListGroup.Item>
+
+                <ListGroup.Item>
+                  <h2>Delivery Method</h2>
+                  <strong>Method: </strong>
+                  <Badge
+                    bg="secondary"
+                    style={{
+                      fontSize: "1rem", // Adjust the font size to make the badge larger
+                      padding: "0.5rem 1rem", // Adjust padding to make the badge larger
+                    }}
+                  >
+                    {deliveryMethod.name}
+                  </Badge>
                 </ListGroup.Item>
 
                 <ListGroup.Item>
@@ -110,16 +147,11 @@ const PlaceOrderScreen = () => {
                         <ListGroup.Item key={index}>
                           <Row>
                             <Col md={1}>
-                              <Image
-                                src={item.image}
-                                alt={item.name}
-                                fluid
-                                rounded
-                              />
+                              <Image src="" alt={item.title} fluid rounded />
                             </Col>
                             <Col>
-                              <Link to={`/product/${item.product}`}>
-                                {item.name}
+                              <Link to={`/product/${item.variant_id}`}>
+                                {item.variant_title}
                               </Link>
                             </Col>
                             <Col md={4}>

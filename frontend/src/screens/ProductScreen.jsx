@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -39,11 +39,28 @@ const ProductScreen = () => {
   } = useGetProductDetailsQuery(variant_id);
   const [qty, setQty] = useState(1);
 
+  useEffect(() => {
+    if (product) {
+      setQty(product.quantity);
+    }
+  }, []);
+
   const {
     data: attrs,
     isLoading_,
     error_,
   } = useGetProductAttrsQuery(variant_id);
+
+  const imgStyle = {
+    width: "100%",
+    height: "100%",
+  };
+
+  const divStyle = {
+    overflow: "hidden",
+    width: "100%",
+    maxHeight: "400px",
+  };
 
   return (
     <>
@@ -62,11 +79,14 @@ const ProductScreen = () => {
           {/* to display the product name in the tab */}
           <Row>
             <Col md={6}>
-              <Image
-                src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/New-Odyssey-Ark-2nd_1440x640_PC-NoText.webp"
-                alt={product.title}
-                fluid
-              />
+              <div style={divStyle}>
+                <Image
+                  src={product.img}
+                  alt={product.title}
+                  fluid
+                  style={imgStyle}
+                />
+              </div>
             </Col>
             <Col md={3}>
               <ListGroup variant="flush">
@@ -128,25 +148,23 @@ const ProductScreen = () => {
                     </Row>
                   </ListGroup.Item>
 
-                  {product.countInStock > 0 && (
+                  {product.quantity > 0 && (
                     <ListGroup.Item
                       style={{ backgroundColor: "rgb(255, 148, 0)" }}
                     >
                       <Row>
-                        <Col>Qty</Col>
+                        <Col>Quantity</Col>
                         <Col>
                           <Form.Control
                             as="select"
                             value={qty}
                             onChange={(e) => setQty(Number(e.target.value))}
                           >
-                            {[...Array(product.countInStock).keys()].map(
-                              (x) => (
-                                <option key={x + 1} value={x + 1}>
-                                  {x + 1}
-                                </option>
-                              )
-                            )}
+                            {[...Array(product.quantity).keys()].map((x) => (
+                              <option key={x + 1} value={x + 1}>
+                                {x + 1}
+                              </option>
+                            ))}
                           </Form.Control>
                         </Col>
                       </Row>

@@ -4,18 +4,38 @@ import "./product.css";
 import Rating from "./Rating";
 
 const Product = ({ product }) => {
+  const imgStyle = {
+    width: "100%",
+    height: "100%",
+  };
+
+  const divStyle = {
+    overflow: "hidden",
+    width: "100%",
+    maxHeight: "170px",
+  };
+
   return (
     <Card className="my-3 p-3 rounded product_card">
-      <Link to={`/product/${product.variant_id}`}>
-        <Card.Img
-          className="product-image"
-          src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-hero-220907.jpg.landing-big_2x.jpg"
-          variant="top"
-        />
+      <Link
+        to={`/product/${product.variant_id}`}
+        style={{ textDecoration: "none" }}
+      >
+        <div style={divStyle}>
+          <Card.Img
+            className="product-image"
+            src={product.img}
+            variant="top"
+            style={imgStyle}
+          />
+        </div>
       </Link>
 
       <Card.Body className="product-body">
-        <Link to={`/product/${product.variant_id}`}>
+        <Link
+          to={`/product/${product.variant_id}`}
+          style={{ textDecoration: "none" }}
+        >
           <Card.Title as="div" className="product-title">
             <strong>{product.title}</strong>
           </Card.Title>
