@@ -21,8 +21,8 @@ const ShippingScreen = () => {
   // Initialize state variables for address, city, postal code, and country
   const [address, setAddress] = useState(shippingAddress?.address || ""); // question mark (?) is used to check if shippingAddress is null or not
   const [city, setCity] = useState(shippingAddress?.city || "");
-  const [deliveryMethod, setDeliveryMethod] = useState(0);
-  //   const [postalCode, setPostalCode] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState(1);
+  const [zipCode, setZipCode] = useState(0);
 
   //   const [postalCode, setPostalCode] = useState(
   // shippingAddress?.postalCode || ""
@@ -45,13 +45,13 @@ const ShippingScreen = () => {
 
   const { data: cities, isLoading, error } = useGetCitiesQuery();
 
-  //   const handleCityChange = (e) => {
-  //     setCity(parseInt(e.target.value));
-  //     console.log(city);
-  //     setPostalCode(
-  //       cities.find((city) => city.city_id === e.target.value).zip_code
-  //     );
-  //   };
+  const handleCityChange = (e) => {
+    setCity(parseInt(e.target.value));
+    console.log(city);
+    setZipCode(
+      cities.find((city) => city.city_id === parseInt(e.target.value)).zip_code
+    );
+  };
 
   const {
     data: deliveryMethods,
@@ -72,10 +72,10 @@ const ShippingScreen = () => {
       ) : (
         <FormContainer>
           <CheckoutSteps step1 step2 /> {/* Display the checkout steps */}
-          <h1>Shipping</h1>
+          <h1 style={{ color: "white" }}>Shipping</h1>
           <Form onSubmit={submitHandler}>
             <Form.Group className="my-2" controlId="address">
-              <Form.Label>Address</Form.Label>
+              <Form.Label style={{ color: "white" }}>Address</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter address"
@@ -86,12 +86,12 @@ const ShippingScreen = () => {
             </Form.Group>
 
             <Form.Group className="my-2" controlId="city">
-              <Form.Label>City</Form.Label>
+              <Form.Label style={{ color: "white" }}>City</Form.Label>
 
               <Form.Select
                 value={city}
                 required
-                onChange={(e) => setCity(parseInt(e.target.value))}
+                onChange={(e) => handleCityChange(e)}
               >
                 {cities.map((city) => (
                   <option value={city.city_id}>{city.name}</option>
@@ -99,13 +99,15 @@ const ShippingScreen = () => {
               </Form.Select>
             </Form.Group>
 
-            {/* <Form.Group controlId="postalCode">
-              <Form.Label>Postal Code</Form.Label>
-              <Form.Control type="text" value={postalCode} readOnly />
-            </Form.Group> */}
+            <Form.Group controlId="zipCode">
+              <Form.Label style={{ color: "white" }}>Postal Code</Form.Label>
+              <Form.Control type="text" value={zipCode} readOnly />
+            </Form.Group>
 
             <Form.Group className="my-2" controlId="deliveryMethod">
-              <Form.Label>Delivery Method</Form.Label>
+              <Form.Label style={{ color: "white" }}>
+                Delivery Method
+              </Form.Label>
               <Form.Select
                 value={deliveryMethod}
                 required

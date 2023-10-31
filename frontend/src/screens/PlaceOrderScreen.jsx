@@ -22,15 +22,15 @@ const PlaceOrderScreen = () => {
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
 
   useEffect(() => {
-    if (!cart.shippingAddress.address || !cart.deliveryMethod.deliveryMethod) {
+    if (!cart.shippingAddress.address || !cart.deliveryMethod) {
       navigate("/shipping");
-    } else if (!cart.paymentMethod.paymentMethod) {
+    } else if (!cart.paymentMethod) {
       navigate("/payment");
     }
   }, [
-    cart.paymentMethod.paymentMethod,
+    cart.paymentMethod,
     cart.shippingAddress.address,
-    cart.deliveryMethod.deliveryMethod,
+    cart.deliveryMethod,
     navigate,
   ]);
 
@@ -57,15 +57,21 @@ const PlaceOrderScreen = () => {
     data: paymentMethod,
     isLoading_1,
     error_1,
-  } = useGetPaymentMethodQuery();
+  } = useGetPaymentMethodQuery(cart.paymentMethod);
 
-  const { data: city, isLoading_2, error_2 } = useGetCityQuery();
+  console.log("payment", cart.paymentMethod);
+  console.log("delivery", cart.deliveryMethod);
+  console.log("city", cart.shippingAddress.city);
+  const {
+    data: city,
+    isLoading_2,
+    error_2,
+  } = useGetCityQuery(cart.shippingAddress.city);
   const {
     data: deliveryMethod,
     isLoading_3,
     error_3,
-  } = useGetDeliveryMethodQuery();
-
+  } = useGetDeliveryMethodQuery(parseInt(cart.deliveryMethod.deliveryMethod));
   return (
     <>
       {isLoading || isLoading_1 || isLoading_2 || isLoading_3 ? (
@@ -78,23 +84,26 @@ const PlaceOrderScreen = () => {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h2>Shipping</h2>
-                  <p>
+                  <h6>
                     <strong>Address:</strong>
-                    {cart.shippingAddress.address}, {cart.shippingAddress.city}{" "}
-                    {cart.shippingAddress.postalCode},{" "}
-                  </p>
+                    {cart.shippingAddress.address}
+                  </h6>
+                  <h6>City: {city.name}</h6>
+                  <h6>Zip Code: {city.zip_code}</h6>
                 </ListGroup.Item>
 
                 <ListGroup.Item>
                   <h2>Payment Method</h2>
                   <strong>Method: </strong>
-                  {cart.paymentMethod}
+                  {paymentMethod}
                 </ListGroup.Item>
 
                 <ListGroup.Item>
                   <h2>Order Items</h2>
                   {cart.cartItems.length === 0 ? (
-                    <Message>Your cart is empty</Message>
+                    <Message style={{ color: "white" }}>
+                      Your cart is empty
+                    </Message>
                   ) : (
                     <ListGroup variant="flush">
                       {cart.cartItems.map((item, index) => (

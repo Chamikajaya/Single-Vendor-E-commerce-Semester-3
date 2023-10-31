@@ -108,10 +108,11 @@ const getDeliveryMethodById = asyncHandler(async (req, res) => {
   // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
 
   //   const orders = await Order.find({ user: req.user.user_id });
-  const delivery_method = await query(
-    "SELECT * FROM delivery_method WHERE delivery_method_id = ?",
-    [parseInt(req.params.id)]
-  );
+  const delivery_method = (
+    await query("SELECT * FROM delivery_method WHERE delivery_method_id = ?", [
+      parseInt(req.params.id),
+    ])
+  )[0];
   res.status(201).json(delivery_method);
 });
 
@@ -124,10 +125,11 @@ const getPaymentMethodById = asyncHandler(async (req, res) => {
   // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
 
   //   const orders = await Order.find({ user: req.user.user_id });
-  const payment_method = await query(
-    "SELECT * FROM payment_method WHERE payment_method_id = ?",
-    [parseInt(req.params.id)]
-  );
+  const payment_method = (
+    await query("SELECT * FROM payment_method WHERE payment_method_id = ?", [
+      parseInt(req.params.id),
+    ])
+  )[0];
   res.status(201).json(payment_method);
 });
 
@@ -140,9 +142,11 @@ const getCityById = asyncHandler(async (req, res) => {
   // Example MySQL code: const orders = await db.query('SELECT * FROM orders WHERE user_id = ?', [req.user._id]);
 
   //   const orders = await Order.find({ user: req.user.user_id });
-  const city = await query("SELECT * FROM city WHERE city_id = ?", [
-    parseInt(req.params.id),
-  ]);
+  const city = (
+    await query("SELECT * FROM city WHERE city_id = ?", [
+      parseInt(req.params.id),
+    ])
+  )[0];
   res.status(201).json(city);
 });
 

@@ -35,20 +35,24 @@ const CartScreen = () => {
   return (
     <Row>
       <Col md={8}>
-        <h1 style={{ marginBottom: "20px" }}>Shopping Cart</h1>
+        <h1 style={{ marginBottom: "20px", color: "white" }}>Shopping Cart</h1>
         {cartItems.length === 0 ? (
-          <Message>
+          <Message style={{ color: "white" }}>
             Your cart is empty <Link to="/">Go Back</Link>
           </Message>
         ) : (
           <ListGroup variant="flush">
             {cartItems.map((item) => (
-              <ListGroup.Item key={item.variant_id}>
-                <Row>
+              <ListGroup.Item
+                key={item.variant_id}
+                style={{ background: "white", borderRadius: "10px" }}
+              >
+                <Row style={{ marginBottom: "20px" }}>
                   <Col md={2}>
                     <Image
                       src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-hero-220907.jpg.landing-big_2x.jpg"
                       alt={item.variant_title}
+                      style={{ borderRadius: "10px" }}
                       fluid
                       rounded
                     />

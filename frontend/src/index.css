@@ -16,6 +16,10 @@ body {
   color: white;
 }
 
+.table tr th {
+  color: "white";
+}
+
 .rating-text {
   font-size: 0.8rem;
   font-weight: 600;

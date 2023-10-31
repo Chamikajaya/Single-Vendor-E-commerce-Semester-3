@@ -14,12 +14,14 @@ const cartSlice = createSlice({
       const item = action.payload;
 
       // Check if the item is already in the cart
-      const existItem = state.cartItems.find((x) => x._id === item._id);
+      const existItem = state.cartItems.find(
+        (x) => x.variant_id === item.variant_id
+      );
 
       if (existItem) {
         // If exists, update quantity
         state.cartItems = state.cartItems.map((x) =>
-          x._id === existItem._id ? item : x
+          x.variant_id === existItem.variant_id ? item : x
         );
       } else {
         // If not exists, add new item to cartItems
@@ -31,7 +33,9 @@ const cartSlice = createSlice({
     },
     removeFromCart: (state, action) => {
       // Filter out the item to remove from the cart
-      state.cartItems = state.cartItems.filter((x) => x._id !== action.payload);
+      state.cartItems = state.cartItems.filter(
+        (x) => x.variant_id !== action.payload
+      );
 
       // Update the prices and save to storage
       return updateCart(state);

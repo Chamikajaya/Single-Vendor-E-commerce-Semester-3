@@ -58,12 +58,14 @@ const PaymentScreen = () => {
         <FormContainer>
           {/* Display the checkout steps */}
           <CheckoutSteps step1 step2 step3 />
-          <h1>Payment Method</h1>
+          <h1 style={{ color: "white" }}>Payment Method</h1>
           {/* Create a form for payment method selection with radio buttons */}
-          <Form onSubmit={submitHandler}>
+          <Form onSubmit={submitHandler} style={{ marginTop: "2rem" }}>
             <Form.Group>
               {/* Label for the radio button group */}
-              <Form.Label as="legend">Select Method</Form.Label>
+              <Form.Label as="legend" style={{ color: "white" }}>
+                Select Method
+              </Form.Label>
               <Col>
                 {/* Radio button option for PayPal or Credit Card, with its value controlled by the state */}
                 {paymentMethods.map((method) => (
@@ -75,13 +77,22 @@ const PaymentScreen = () => {
                     name="paymentMethods"
                     value={method.payment_method_id}
                     checked={paymentMethod === method.payment_method_id}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    onChange={(e) => setPaymentMethod(parseInt(e.target.value))}
+                    style={{
+                      display: "block",
+                      margin: "1rem 0",
+                      color: "white",
+                    }}
                   ></Form.Check>
                 ))}
               </Col>
             </Form.Group>
             {/* Submit button to proceed to the next step in the checkout process */}
-            <Button type="submit" variant="primary">
+            <Button
+              type="submit"
+              variant="primary"
+              style={{ marginTop: "2rem" }}
+            >
               Continue
             </Button>
           </Form>
