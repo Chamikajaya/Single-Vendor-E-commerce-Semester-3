@@ -5,6 +5,7 @@ import Product from "../models/productModel.js";
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
+// completed
 const getProducts = asyncHandler(async (req, res) => {
   // set the pagination
   const pageSize = 8; // * feel free to increase this val
@@ -12,15 +13,18 @@ const getProducts = asyncHandler(async (req, res) => {
   const keyword = req.query.keyword ? req.query.keyword : ""; // this is to search for a product by name (case insensitive) needed to use regular expression
 
   const count = (
-    await query("SELECT COUNT(product_id) as count FROM Product", [])
+    await query(
+      "SELECT COUNT(variant_id) as count FROM Product JOIN variant USING(product_id)",
+      []
+    )
   )[0].count; // get the all the product count
   // const products = await Product.find({ ...keyword })
   // .limit(pageSize)
   // .skip(pageSize * (page - 1));
-  const products = await query("SELECT * FROM Product WHERE title REGEXP ?", [
-    keyword,
-  ]);
-  console.log(products);
+  const products = await query(
+    "SELECT * FROM Product JOIN variant USING(product_id) ",
+    [keyword]
+  );
   const start = (page - 1) * pageSize;
   const end = pageSize * page;
   const pagedProducts = products.slice(start, end);
@@ -30,10 +34,14 @@ const getProducts = asyncHandler(async (req, res) => {
 // @desc    Fetch single product
 // @route   GET /api/products/:id
 // @access  Public
+// completed
 const getProductById = asyncHandler(async (req, res) => {
   // todo : use sql query to get product by id
   const product = (
-    await query("SELECT * FROM Product WHERE product_id = ?", [req.params.id])
+    await query(
+      "SELECT * FROM Product JOIN Variant v USING(product_id) WHERE variant_id = ?",
+      [req.params.id]
+    )
   )[0];
   if (product) {
     return res.json(product);
@@ -117,7 +125,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 const getTopProducts = asyncHandler(async (req, res) => {
   // todo : use sql query to get top rated products
   const products = await query(
-    "SELECT * FROM Product ORDER BY product_id DESC LIMIT 10",
+    "SELECT * FROM Product JOIN Variant USING(product_id) ORDER BY product_id DESC LIMIT 10",
     []
   );
 
