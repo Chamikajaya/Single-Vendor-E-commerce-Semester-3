@@ -10,8 +10,12 @@ import {
   Card,
   Button,
   Form,
+  Table,
 } from "react-bootstrap";
-import { useGetProductDetailsQuery } from "../slices/productsApiSlice";
+import {
+  useGetProductDetailsQuery,
+  useGetProductAttrsQuery,
+} from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { addToCart } from "../slices/cartSlice";
@@ -36,12 +40,18 @@ const ProductScreen = () => {
     error,
   } = useGetProductDetailsQuery(productId);
 
+  const {
+    data: attrs,
+    isLoading_,
+    error_,
+  } = useGetProductAttrsQuery(productId);
+
   return (
     <>
       <Link className="btn btn-light my-3" to="/">
         Go Back
       </Link>
-      {isLoading ? (
+      {isLoading || isLoading_ ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">
@@ -54,7 +64,7 @@ const ProductScreen = () => {
           <Row>
             <Col md={6}>
               <Image
-                src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-hero-220907.jpg.landing-big_2x.jpg"
+                src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/New-Odyssey-Ark-2nd_1440x640_PC-NoText.webp"
                 alt={product.title}
                 fluid
               />
@@ -70,6 +80,29 @@ const ProductScreen = () => {
                   Description: {product.description}
                 </ListGroup.Item>
               </ListGroup>
+
+              <h4>Attributes</h4>
+              {attrs && (
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Attribute Name</th>
+                      <th>Attribute Value</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {attrs.map((attr) => (
+                      <tr key={attr.attr_id}>
+                        <td>{attr.attr_key}</td>
+                        <td>{attr.attr_value}</td>
+                        <td>{attr.attr_type}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+              {!attrs && <h4>No Attributes</h4>}
             </Col>
             <Col md={3}>
               <Card>

@@ -22,8 +22,8 @@ const getProducts = asyncHandler(async (req, res) => {
   // .limit(pageSize)
   // .skip(pageSize * (page - 1));
   const products = await query(
-    "SELECT * FROM Product JOIN variant USING(product_id) ",
-    [keyword]
+    "SELECT * FROM Product JOIN variant USING(product_id) WHERE title LIKE ? ",
+    [`%${keyword}%`]
   );
   const start = (page - 1) * pageSize;
   const end = pageSize * page;
@@ -45,6 +45,22 @@ const getProductById = asyncHandler(async (req, res) => {
   )[0];
   if (product) {
     return res.json(product);
+  }
+  res.status(404);
+  throw new Error("Resource not found");
+});
+
+// @desc    Fetch single product
+// @route   GET /api/products/:id
+// @access  Public
+// completed
+const getProductAttrById = asyncHandler(async (req, res) => {
+  // todo : use sql query to get product by id
+  const attrs = (
+    await query("CALL get_attr_by_product_id(?)", [req.params.id])
+  )[0];
+  if (attrs) {
+    return res.json(attrs);
   }
   res.status(404);
   throw new Error("Resource not found");
@@ -135,6 +151,7 @@ const getTopProducts = asyncHandler(async (req, res) => {
 export {
   getProducts,
   getProductById,
+  getProductAttrById,
   createProduct,
   updateProduct,
   deleteProduct,

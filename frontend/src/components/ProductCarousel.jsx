@@ -19,7 +19,7 @@ const ProductCarousel = () => {
         <Carousel.Item key={product.product_id}>
           <Link to={`/product/${product.product_id}`}>
             <Image
-              src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-hero-220907.jpg.landing-big_2x.jpg"
+              src="https://csg1003200203c04e96.blob.core.windows.net/ecom-blob/New-Odyssey-Ark-2nd_1440x640_PC-NoText.webp"
               alt={product.title}
               fluid
             />
