@@ -10,6 +10,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     orderItems,
     shippingAddress,
     paymentMethod,
+    deliveryMethod,
     itemsPrice,
     taxPrice,
     shippingPrice,
@@ -20,26 +21,40 @@ const addOrderItems = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("No order items");
   } else {
-    //  Todo: Replace this MongoDB-specific code with MySQL code for creating a new order
-    // Example MySQL code: const createdOrder = await db.query('INSERT INTO orders (orderItems, user, shippingAddress, paymentMethod, taxPrice, shippingPrice, totalPrice) VALUES (?, ?, ?, ?, ?, ?, ?)', [orderItems, req.user._id, shippingAddress, paymentMethod, taxPrice, shippingPrice, totalPrice]);
-    // * (double check this sql query)
+    // get the user id from the requesr body
+    console.log("User: ", req.user[0].user_id);
+    const user_id = req.user[0].user_id;
+    console.log("Order user ID: ", user_id);
 
-    const order = new Order({
-      orderItems: orderItems.map((x) => ({
-        ...x,
-        product: x._id,
-        _id: undefined,
-      })),
-      user: req.user._id,
-      shippingAddress,
+    // get the cart id for the user id
+    const cart_id = (await query("CALL get_last_cart_id(?)", [user_id]))[0][0]
+      .cart_id;
+
+    // console.log("Order Cart ID: ", cart_id);
+
+    // add the order items to the database
+    for (let i = 0; i < orderItems.length; i++) {
+      const orderItem = orderItems[i];
+      await query("CALL add_cart_item(?, ?, ?)", [
+        user_id,
+        orderItem.variant_id,
+        orderItem.quantity,
+      ]);
+      // console.log("Successfully added: Order Item: ", orderItem);
+    }
+
+    // create the order in the order table
+    const createdOrder = await query("CALL place_order(?, ?, ?, ?, ?)", [
+      user_id,
+      shippingAddress.city,
       paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
-    });
+      deliveryMethod.deliveryMethod,
+      shippingAddress.address,
+    ]);
 
-    const createdOrder = await order.save();
+    // console.log("Successfully added: Order: ", createdOrder[0][0]);
+
+    // const createdOrder = await order.save();
 
     res.status(201).json(createdOrder);
   }
@@ -155,18 +170,15 @@ const getCityById = asyncHandler(async (req, res) => {
 // @access  Private
 // TODO: completed
 const getOrderById = asyncHandler(async (req, res) => {
-  // Todo: Replace this MongoDB-specific code with MySQL code for getting an order by its ID
-  // Example MySQL code: const order = await db.query('SELECT * FROM orders WHERE order_id = ?', [req.params.id]);
-
-  //   const order = await Order.findById(req.params.id).populate(
-  //     "user",
-  //     "name email"
-  //   );
-  const order = await query("CALL get_order_by_order_id(?)", [
-    parseInt(req.params.order_id),
-  ]);
+  const order = (
+    await query("CALL get_order_by_order_id(?)", [
+      parseInt(req.params.order_id),
+    ])
+  )[0];
+  console.log(order);
   if (order) {
-    res.status(201).json(order[0]);
+    console.log("Order: ", order[0][0]);
+    res.status(201).json(order[0][0]);
   } else {
     res.status(404);
     throw new Error("Order not found");

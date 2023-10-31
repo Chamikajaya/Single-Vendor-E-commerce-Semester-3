@@ -55,13 +55,14 @@ const PlaceOrderScreen = () => {
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
+        deliveryMethod: cart.deliveryMethod,
         itemsPrice: cart.itemsPrice,
         shippingPrice: cart.shippingPrice,
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
       }).unwrap();
       dispatch(clearCartItems());
-      navigate(`/order/${res.order_id}`);
+      navigate(`/order/${res[0][0].order_id}`);
     } catch (err) {
       toast.error(err);
     }
@@ -83,6 +84,7 @@ const PlaceOrderScreen = () => {
     isLoading_3,
     error_3,
   } = useGetDeliveryMethodQuery(parseInt(cart.deliveryMethod.deliveryMethod));
+
   return (
     <>
       {isLoading || isLoading_1 || isLoading_2 || isLoading_3 ? (
@@ -100,10 +102,10 @@ const PlaceOrderScreen = () => {
                     {cart.shippingAddress.address}
                   </h6>
                   <h6>
-                    <strong>City:</strong> {city.name}
+                    <strong>City:</strong> {}
                   </h6>
                   <h6>
-                    <strong>Zip Code:</strong> {city.zip_code}
+                    <strong>Zip Code:</strong> {}
                   </h6>
                 </ListGroup.Item>
 
@@ -117,7 +119,7 @@ const PlaceOrderScreen = () => {
                       padding: "0.5rem 1rem", // Adjust padding to make the badge larger
                     }}
                   >
-                    {paymentMethod.name}
+                    {}
                   </Badge>
                 </ListGroup.Item>
 
@@ -131,7 +133,7 @@ const PlaceOrderScreen = () => {
                       padding: "0.5rem 1rem", // Adjust padding to make the badge larger
                     }}
                   >
-                    {deliveryMethod.name}
+                    {}
                   </Badge>
                 </ListGroup.Item>
 
