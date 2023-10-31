@@ -23,10 +23,17 @@ const ProductCarousel = () => {
               alt={product.title}
               fluid
             />
-            <Carousel.Caption className="carousel-caption">
-              <h2 className="text-white text-right">
-                {product.title}-{product.variant_title} (${product.price})
+            <Carousel.Caption
+              className="carousel-caption"
+              style={{ fontSize: "20px" }}
+            >
+              <h2
+                className="text-white text-right"
+                style={{ fontSize: "50px" }}
+              >
+                {product.title}-{product.variant_title}
               </h2>
+              <p>{product.description}</p>
             </Carousel.Caption>
           </Link>
         </Carousel.Item>

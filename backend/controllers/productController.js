@@ -38,11 +38,8 @@ const getProducts = asyncHandler(async (req, res) => {
 const getProductById = asyncHandler(async (req, res) => {
   // todo : use sql query to get product by id
   const product = (
-    await query(
-      "SELECT * FROM Product JOIN Variant v USING(product_id) WHERE variant_id = ?",
-      [req.params.id]
-    )
-  )[0];
+    await query("CALL get_variant_by_id(?)", [req.params.id])
+  )[0][0];
   if (product) {
     return res.json(product);
   }

@@ -12,14 +12,10 @@ import { Link } from "react-router-dom";
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams();
 
-  console.log(pageNumber);
-
   const { data, isLoading, error } = useGetProductsQuery({
     keyword,
     pageNumber,
   });
-
-  //   console.log(data);
 
   return (
     <>
@@ -43,7 +39,7 @@ const HomeScreen = () => {
           <h1 style={{ color: "white" }}>Latest Products</h1>
           <Row>
             {data.pagedProducts.map((product) => (
-              <Col key={product.product_id} sm={12} md={6} lg={4} xl={3}>
+              <Col key={product.variant_id} sm={12} md={6} lg={4} xl={3}>
                 <Product product={product} />
               </Col>
             ))}

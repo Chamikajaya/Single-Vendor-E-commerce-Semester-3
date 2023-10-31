@@ -10,7 +10,6 @@ import {
   Card,
   Button,
   Form,
-  Table,
 } from "react-bootstrap";
 import {
   useGetProductDetailsQuery,
@@ -22,12 +21,11 @@ import { addToCart } from "../slices/cartSlice";
 import Meta from "../components/Meta";
 
 const ProductScreen = () => {
-  const { id: productId } = useParams();
+  const { id: variant_id } = useParams();
+  console.log("variant_id: ", variant_id);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [qty, setQty] = useState(1);
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));
@@ -38,13 +36,14 @@ const ProductScreen = () => {
     data: product,
     isLoading,
     error,
-  } = useGetProductDetailsQuery(productId);
+  } = useGetProductDetailsQuery(variant_id);
+  const [qty, setQty] = useState(1);
 
   const {
     data: attrs,
     isLoading_,
     error_,
-  } = useGetProductAttrsQuery(productId);
+  } = useGetProductAttrsQuery(variant_id);
 
   return (
     <>
@@ -59,7 +58,7 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
-          <Meta title={product.name} />{" "}
+          <Meta title={product.title} />{" "}
           {/* to display the product name in the tab */}
           <Row>
             <Col md={6}>
@@ -71,43 +70,46 @@ const ProductScreen = () => {
             </Col>
             <Col md={3}>
               <ListGroup variant="flush">
-                <ListGroup.Item>
+                <ListGroup.Item style={{ backgroundColor: "orange" }}>
                   <h3>{product.title}</h3>
                   <h4>{product.variant_title}</h4>
                 </ListGroup.Item>
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-                <ListGroup.Item>
-                  Description: {product.description}
+                <ListGroup.Item style={{ backgroundColor: "rgb(255, 148, 0)" }}>
+                  <strong>Price</strong> ${product.price}
+                </ListGroup.Item>
+                <ListGroup.Item style={{ backgroundColor: "rgb(255, 148, 0)" }}>
+                  <strong>SKU:</strong> {product.sku}
+                </ListGroup.Item>
+                <ListGroup.Item style={{ backgroundColor: "rgb(255, 148, 0)" }}>
+                  <strong>Weight:</strong> {product.weight}
+                </ListGroup.Item>
+                <ListGroup.Item style={{ backgroundColor: "rgb(255, 148, 0)" }}>
+                  <strong>Description:</strong> {product.description}
                 </ListGroup.Item>
               </ListGroup>
 
-              <h4>Attributes</h4>
+              <h4 style={{ color: "white", marginTop: "50px" }}>Attributes</h4>
               {attrs && (
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Attribute Name</th>
-                      <th>Attribute Value</th>
-                      <th>Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attrs.map((attr) => (
-                      <tr key={attr.attr_id}>
-                        <td>{attr.attr_key}</td>
-                        <td>{attr.attr_value}</td>
-                        <td>{attr.attr_type}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                <ListGroup variant="flush">
+                  {attrs.map((attr) => (
+                    <ListGroup.Item
+                      key={attr.id}
+                      style={{ backgroundColor: "rgb(255, 148, 0)" }}
+                    >
+                      <strong>{attr.attr_key}:</strong> {attr.attr_value} (
+                      <i>{attr.attr_type}</i>)
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
               )}
               {!attrs && <h4>No Attributes</h4>}
             </Col>
             <Col md={3}>
               <Card>
                 <ListGroup variant="flush">
-                  <ListGroup.Item>
+                  <ListGroup.Item
+                    style={{ backgroundColor: "rgb(255, 148, 0)" }}
+                  >
                     <Row>
                       <Col>Price:</Col>
                       <Col>
@@ -115,7 +117,9 @@ const ProductScreen = () => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                  <ListGroup.Item>
+                  <ListGroup.Item
+                    style={{ backgroundColor: "rgb(255, 148, 0)" }}
+                  >
                     <Row>
                       <Col>Status:</Col>
                       <Col>
@@ -125,7 +129,9 @@ const ProductScreen = () => {
                   </ListGroup.Item>
 
                   {product.countInStock > 0 && (
-                    <ListGroup.Item>
+                    <ListGroup.Item
+                      style={{ backgroundColor: "rgb(255, 148, 0)" }}
+                    >
                       <Row>
                         <Col>Qty</Col>
                         <Col>
@@ -147,7 +153,7 @@ const ProductScreen = () => {
                     </ListGroup.Item>
                   )}
 
-                  <ListGroup.Item>
+                  <ListGroup.Item style={{ backgroundColor: "orange" }}>
                     <Button
                       className="btn-block"
                       type="button"
