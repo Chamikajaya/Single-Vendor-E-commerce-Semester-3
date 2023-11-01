@@ -1,0 +1,45 @@
+/* Footer styles */
+.ecommerce-footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-section {
+  flex: 1;
+  padding: 10px;
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin: 5px 0;
+}
+
+.footer-section ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  display: block;
+}
+
+/* Social media icons */
+.social-media li {
+  display: flex;
+  align-items: center;
+}
+
+.social-media i {
+  margin-right: 10px;
+  font-size: 24px;
+}

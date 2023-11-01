@@ -33,8 +33,9 @@ const protect = asyncHandler(async (req, res, next) => {
 
 // *** Admin middleware  ==> to check if the user is admin or not
 const admin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
+  if (req.user && req.user[0].role == "admin") {
     // if user exists and if user is admin
+    console.log("logges as a admin successfully");
     next(); // go to the next middleware
   } else {
     res.status(401); // 401 ==> unauthorized access

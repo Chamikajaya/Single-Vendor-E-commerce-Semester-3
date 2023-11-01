@@ -19,6 +19,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { addToCart } from "../slices/cartSlice";
 import Meta from "../components/Meta";
+import "./product.css";
 
 const ProductScreen = () => {
   const { id: variant_id } = useParams();
@@ -80,6 +81,7 @@ const ProductScreen = () => {
           <Row>
             <Col md={6}>
               <div style={divStyle}>
+                {" "}
                 <Image
                   src={product.img}
                   alt={product.title}
@@ -107,6 +109,14 @@ const ProductScreen = () => {
                   <strong>Description:</strong> {product.description}
                 </ListGroup.Item>
               </ListGroup>
+
+              <div class="category-badge">
+                <span class="category-name">{product.child_name}</span>
+              </div>
+
+              <div class="category-badge">
+                <span class="category-name">{product.parent_name}</span>
+              </div>
 
               <h4 style={{ color: "white", marginTop: "50px" }}>Attributes</h4>
               {attrs && (
@@ -143,7 +153,7 @@ const ProductScreen = () => {
                     <Row>
                       <Col>Status:</Col>
                       <Col>
-                        {product.countInStock > 0 ? "In Stock" : "Out Of Stock"}
+                        {product.quantity > 0 ? "In Stock" : "Out Of Stock"}
                       </Col>
                     </Row>
                   </ListGroup.Item>

@@ -8,7 +8,6 @@ const Product = ({ product }) => {
     width: "100%",
     height: "100%",
   };
-
   const divStyle = {
     overflow: "hidden",
     width: "100%",
@@ -16,7 +15,7 @@ const Product = ({ product }) => {
   };
 
   return (
-    <Card className="my-3 p-3 rounded product_card">
+    <Card className="product_card">
       <Link
         to={`/product/${product.variant_id}`}
         style={{ textDecoration: "none" }}
@@ -42,15 +41,24 @@ const Product = ({ product }) => {
           <Card.Text as="h4" className="product-title">
             {product.variant_title}
           </Card.Text>
+          <Card.Text as="h5" className="product-title">
+            <div class="category-badge">
+              <span class="category-name">{product.parent_name}</span>
+            </div>
+            <div class="category-badge">
+              <span class="category-name">{product.child_name}</span>
+            </div>
+          </Card.Text>
         </Link>
 
         {/* <Card.Text as="div">
           <Rating value={product.rating} />
         </Card.Text> */}
       </Card.Body>
-      <Card.Text as="h5" className="product-price">
-        $ {product.price}
-      </Card.Text>
+      <div className="product-price">
+        ${product.price}
+        {/* <button class="add-to-cart-button">Add to Cart</button> */}
+      </div>
     </Card>
   );
 };

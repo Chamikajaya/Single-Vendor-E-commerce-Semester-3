@@ -21,10 +21,7 @@ const getProducts = asyncHandler(async (req, res) => {
   // const products = await Product.find({ ...keyword })
   // .limit(pageSize)
   // .skip(pageSize * (page - 1));
-  const products = await query(
-    "SELECT * FROM Product JOIN variant USING(product_id) WHERE title LIKE ? ",
-    [`%${keyword}%`]
-  );
+  const products = (await query("CALL get_variants(?) ", [`%${keyword}%`]))[0];
   const start = (page - 1) * pageSize;
   const end = pageSize * page;
   const pagedProducts = products.slice(start, end);

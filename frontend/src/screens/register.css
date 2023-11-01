@@ -1,0 +1,14 @@
+.form-container {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 10px;
+  /* margin: auto; */
+  min-width: 100%;
+}
+
+.submit-btn {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  max-width: 150px;
+}

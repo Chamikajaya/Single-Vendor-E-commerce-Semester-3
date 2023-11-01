@@ -1,9 +1,11 @@
 .product_card {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   transition: all 0.2s ease-in-out;
   /* border: 1px solid rgba(100, 100, 100, 0.8); */
-  border-radius: 0;
-  height: 420px;
+  border-radius: 20px;
+  height: 480px;
+  padding: 0px;
+  margin: 20px 5px;
 }
 
 .product_card:hover {
@@ -14,13 +16,15 @@
 .product-price {
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
-  font-weight: 600;
+  font-weight: 700;
   padding: 15px 60px;
-  font-size: 25px;
+  font-size: 33px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .product-price:hover {
-  background-color: black;
+  background-color: rgb(233, 121, 52);
   color: white;
 }
 
@@ -33,11 +37,12 @@
 
 .product-body {
   background-color: rgba(21, 17, 17, 0.7);
+  border-radius: 0px;
   color: white;
 }
 
 .product-body:hover {
-  background-color: black;
+  background-color: rgb(4, 24, 97);
   color: white;
 }
 
@@ -45,4 +50,37 @@
   color: white;
   text-decoration: none;
   text-underline-offset: 0;
+}
+
+.category-badge {
+  display: inline-block;
+  background-color: #0ebe6c;
+  color: #fff;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 14px;
+  margin: 5px 5px;
+}
+
+.category-name {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Add to Cart Button Styles */
+.add-to-cart-button {
+  display: inline-block;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-to-cart-button:hover {
+  background-color: #0056b3;
 }

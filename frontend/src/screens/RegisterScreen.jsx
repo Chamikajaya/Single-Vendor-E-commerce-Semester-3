@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 
 import { useRegisterMutation } from "../slices/usersApiSlice";
+import { useGetCitiesQuery } from "../slices/ordersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
 
@@ -26,6 +27,7 @@ const RegisterScreen = () => {
   const navigate = useNavigate();
 
   const [register, { isLoading }] = useRegisterMutation();
+  const { data: cities, isLoading_, error_ } = useGetCitiesQuery();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -65,103 +67,132 @@ const RegisterScreen = () => {
   };
   // todo: Implement the other required user related fields in the following form (refer ER diagram)
   return (
-    <FormContainer>
-      <h1 style={{ color: "white" }}>Register</h1>
+    // <FormContainer className="form-container">
+    <div className="form-container">
+      <h1 style={{ color: "white", margin: "auto" }}>Register</h1>
       <Form onSubmit={submitHandler}>
-        <Form.Group className="my-2" controlId="username">
-          <Form.Label style={{ color: "white" }}>Username</Form.Label>
-          <Form.Control
-            type="username"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUserName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group className="my-2" controlId="username">
+              <Form.Label style={{ color: "white" }} className="form-row">
+                Username
+              </Form.Label>
+              <Form.Control
+                type="username"
+                placeholder="Enter username"
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Form.Group className="my-2" controlId="email">
-          <Form.Label style={{ color: "white" }}>Email Address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group className="my-2 form-row" controlId="email">
+              <Form.Label style={{ color: "white" }} className="form-row">
+                Email Address
+              </Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Form.Group className="my-2" controlId="password">
-          <Form.Label style={{ color: "white" }}>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group className="my-2" controlId="confirmPassword">
-          <Form.Label style={{ color: "white" }}>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group className="my-2" controlId="password">
+              <Form.Label style={{ color: "white" }}>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="confirmPassword">
+              <Form.Label style={{ color: "white" }}>
+                Confirm Password
+              </Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group className="my-2" controlId="firstName">
+              <Form.Label style={{ color: "white" }}>First Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Form.Group className="my-2" controlId="firstName">
-          <Form.Label style={{ color: "white" }}>First Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group className="my-2" controlId="lastName">
+              <Form.Label style={{ color: "white" }}>Last Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Form.Group className="my-2" controlId="lastName">
-          <Form.Label style={{ color: "white" }}>Last Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group className="my-2" controlId="cityId">
+              <Form.Label style={{ color: "white" }}> City </Form.Label>
+              {/* <Form.Control
+                type="text"
+                placeholder="Select City"
+                value={cityId}
+                onChange={(e) => setCityId(parseInt(e.target.value))}
+              ></Form.Control> */}
+              <Form.Select
+                value={cityId}
+                required
+                onChange={(e) => setCityId(parseInt(e.target.value))}
+              >
+                {cities.map((city) => (
+                  <option value={city.city_id}>{city.name}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
-        <Form.Group className="my-2" controlId="cityId">
-          <Form.Label style={{ color: "white" }}> City </Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Select City"
-            value={cityId}
-            onChange={(e) => setCityId(parseInt(e.target.value))}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group className="my-2" controlId="address">
+              <Form.Label style={{ color: "white" }}> Address </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Form.Group className="my-2" controlId="address">
-          <Form.Label style={{ color: "white" }}> Address </Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group className="my-2" controlId="contact">
+              <Form.Label style={{ color: "white" }}>
+                {" "}
+                Contact Number{" "}
+              </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Contact Number"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row>
+          <Button
+            disabled={isLoading}
+            type="submit"
+            variant="primary submit-btn"
+          >
+            Register
+          </Button>
 
-        <Form.Group className="my-2" controlId="contact">
-          <Form.Label style={{ color: "white" }}> Contact Number </Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter Contact Number"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Button disabled={isLoading} type="submit" variant="primary">
-          Register
-        </Button>
-
-        {isLoading && <Loader />}
+          {isLoading && <Loader />}
+        </Row>
       </Form>
 
       <Row className="py-3">
@@ -172,7 +203,7 @@ const RegisterScreen = () => {
           </Link>
         </Col>
       </Row>
-    </FormContainer>
+    </div>
   );
 };
 

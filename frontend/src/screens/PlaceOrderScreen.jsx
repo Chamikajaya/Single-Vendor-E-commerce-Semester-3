@@ -96,10 +96,10 @@ const PlaceOrderScreen = () => {
                     {cart.shippingAddress.address}
                   </h6>
                   <h6>
-                    <strong>City:</strong> {}
+                    <strong>City:</strong> {city.name}
                   </h6>
                   <h6>
-                    <strong>Zip Code:</strong> {}
+                    <strong>Zip Code:</strong> {city.zip_code}
                   </h6>
                 </ListGroup.Item>
 
@@ -107,13 +107,13 @@ const PlaceOrderScreen = () => {
                   <h2>Payment Method</h2>
                   <strong>Method: </strong>
                   <Badge
-                    bg="secondary"
+                    bg="primary"
                     style={{
                       fontSize: "1rem", // Adjust the font size to make the badge larger
                       padding: "0.5rem 1rem", // Adjust padding to make the badge larger
                     }}
                   >
-                    {}
+                    {paymentMethod.name}
                   </Badge>
                 </ListGroup.Item>
 
@@ -121,13 +121,13 @@ const PlaceOrderScreen = () => {
                   <h2>Delivery Method</h2>
                   <strong>Method: </strong>
                   <Badge
-                    bg="secondary"
+                    bg="primary"
                     style={{
                       fontSize: "1rem", // Adjust the font size to make the badge larger
                       padding: "0.5rem 1rem", // Adjust padding to make the badge larger
                     }}
                   >
-                    {}
+                    {deliveryMethod.name}
                   </Badge>
                 </ListGroup.Item>
 
@@ -143,16 +143,26 @@ const PlaceOrderScreen = () => {
                         <ListGroup.Item key={index}>
                           <Row>
                             <Col md={1}>
-                              <Image src="" alt={item.title} fluid rounded />
+                              <Image
+                                src={item.img}
+                                alt={item.title}
+                                fluid
+                                rounded
+                              />
                             </Col>
                             <Col>
-                              <Link to={`/product/${item.variant_id}`}>
-                                {item.variant_title}
+                              <Link
+                                to={`/product/${item.variant_id}`}
+                                style={{ textDecoration: "none" }}
+                              >
+                                <h5>{item.variant_title}</h5>
                               </Link>
                             </Col>
                             <Col md={4}>
-                              {item.qty} x ${item.price} = $
-                              {(item.qty * (item.price * 100)) / 100}
+                              <strong style={{ fontSize: "20px" }}>
+                                {item.qty} x ${item.price} = $
+                                {(item.qty * (item.price * 100)) / 100}
+                              </strong>
                             </Col>
                           </Row>
                         </ListGroup.Item>
@@ -189,7 +199,11 @@ const PlaceOrderScreen = () => {
                   <ListGroup.Item>
                     <Row>
                       <Col>Total</Col>
-                      <Col>${cart.totalPrice}</Col>
+                      <Col>
+                        <h5 style={{ fontSize: "28px", weight: "900" }}>
+                          ${cart.totalPrice}
+                        </h5>
+                      </Col>
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
