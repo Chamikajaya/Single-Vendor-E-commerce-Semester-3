@@ -3,6 +3,7 @@ const router = express.Router();
 import {
   addOrderItems,
   getOrderById,
+  getOrderItems,
   updateOrderToPaid,
   updateOrderToDelivered,
   getMyOrders,
@@ -32,6 +33,7 @@ router.route("/mine").get(protect, getMyOrders);
 
 // Route for retrieving an order by its ID
 router.route("/:id").get(protect, getOrderById);
+router.route("/items/:id").get(protect, getOrderItems);
 
 // Route for updating the payment status of an order
 router.route("/:id/pay").put(protect, updateOrderToPaid);

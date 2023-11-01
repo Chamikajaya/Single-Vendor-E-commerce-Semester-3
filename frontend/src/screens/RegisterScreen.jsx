@@ -66,10 +66,10 @@ const RegisterScreen = () => {
   // todo: Implement the other required user related fields in the following form (refer ER diagram)
   return (
     <FormContainer>
-      <h1>Register</h1>
+      <h1 style={{ color: "white" }}>Register</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="username">
-          <Form.Label>Username</Form.Label>
+          <Form.Label style={{ color: "white" }}>Username</Form.Label>
           <Form.Control
             type="username"
             placeholder="Enter username"
@@ -79,7 +79,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="email">
-          <Form.Label>Email Address</Form.Label>
+          <Form.Label style={{ color: "white" }}>Email Address</Form.Label>
           <Form.Control
             type="email"
             placeholder="Enter email"
@@ -89,7 +89,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label style={{ color: "white" }}>Password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Enter password"
@@ -98,7 +98,7 @@ const RegisterScreen = () => {
           ></Form.Control>
         </Form.Group>
         <Form.Group className="my-2" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
+          <Form.Label style={{ color: "white" }}>Confirm Password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Confirm password"
@@ -108,7 +108,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="firstName">
-          <Form.Label>First Name</Form.Label>
+          <Form.Label style={{ color: "white" }}>First Name</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter First Name"
@@ -118,7 +118,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="lastName">
-          <Form.Label>Last Name</Form.Label>
+          <Form.Label style={{ color: "white" }}>Last Name</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter Last Name"
@@ -128,7 +128,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="cityId">
-          <Form.Label> City </Form.Label>
+          <Form.Label style={{ color: "white" }}> City </Form.Label>
           <Form.Control
             type="text"
             placeholder="Select City"
@@ -138,7 +138,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="address">
-          <Form.Label> Address </Form.Label>
+          <Form.Label style={{ color: "white" }}> Address </Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter address"
@@ -148,7 +148,7 @@ const RegisterScreen = () => {
         </Form.Group>
 
         <Form.Group className="my-2" controlId="contact">
-          <Form.Label> Contact Number </Form.Label>
+          <Form.Label style={{ color: "white" }}> Contact Number </Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter Contact Number"

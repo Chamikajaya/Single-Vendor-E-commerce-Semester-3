@@ -130,6 +130,17 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+const getUserProfileByEmail = asyncHandler(async (req, res) => {
+  let user = (await query("CALL get_customer(?)", [req.body.email]))[0][0];
+
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+});
+
 // @desc    Update user profile
 // @route   PUT /api/users/profile  Here no need to use :id because we will use the token
 // @access  Private TODO:
@@ -236,6 +247,7 @@ export {
   registerUser,
   logOutUser,
   getUserProfile,
+  getUserProfileByEmail,
   updateUserProfile,
   getUsers,
   deleteUser,

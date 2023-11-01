@@ -83,6 +83,12 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    getOrderItems: builder.query({
+      query: (id) => ({
+        url: `${ORDERS_URL}/items/${id}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -100,4 +106,5 @@ export const {
   useGetPaymentMethodQuery,
   useGetDeliveryMethodQuery,
   useGetCityQuery,
+  useGetOrderItemsQuery,
 } = orderApiSlice;

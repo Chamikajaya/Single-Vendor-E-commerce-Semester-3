@@ -5,6 +5,7 @@ import {
   registerUser,
   logOutUser,
   getUserProfile,
+  getUserProfileByEmail,
   updateUserProfile,
   getUsers,
   deleteUser,
@@ -21,6 +22,7 @@ router
   .route("/profile")
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile); // use protect middleware to protect the route (to prevent unauthorized  access) ==> to get the user profile and to update the user profile (private)
+router.route("/email").get(protect, getUserProfileByEmail);
 router
   .route("/:id")
   .delete(protect, admin, deleteUser)

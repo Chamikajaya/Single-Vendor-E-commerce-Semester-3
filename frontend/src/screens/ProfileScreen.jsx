@@ -7,7 +7,10 @@ import { FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { useProfileMutation } from "../slices/usersApiSlice";
+import {
+  useProfileMutation,
+  useGetUserByEmailQuery,
+} from "../slices/usersApiSlice";
 import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 
@@ -26,6 +29,12 @@ const ProfileScreen = () => {
   // Access the 'userInfo' from the Redux store using the 'useSelector' hook
   const { userInfo } = useSelector((state) => state.auth);
 
+  const {
+    data: user_,
+    isLoading_,
+    error_,
+  } = useGetUserByEmailQuery(userInfo.email);
+  console.log("User", user_);
   // Use the 'useGetMyOrdersQuery' hook to fetch data from the server and manage loading and error states
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
@@ -35,21 +44,21 @@ const ProfileScreen = () => {
 
   // Use the 'useEffect' hook to set the initial values of 'name' and 'email' when 'userInfo' changes
   useEffect(() => {
-    setUserName(userInfo.username);
+    setUserName(user_.username);
     setEmail(userInfo.email);
-    setFirstName(userInfo.first_name);
-    setLastName(userInfo.last_name);
-    setCityId(userInfo.city_id);
-    setAddress(userInfo.address);
-    setContact(userInfo.contact_number);
+    setFirstName(user_.first_name);
+    setLastName(user_.last_name);
+    setCityId(user_.city_id);
+    setAddress(user_.address);
+    setContact(user_.contact_number);
   }, [
     userInfo.email,
-    userInfo.username,
-    userInfo.first_name,
-    userInfo.last_name,
-    userInfo.city_id,
-    userInfo.address,
-    userInfo.contact_number,
+    user_.username,
+    user_.first_name,
+    user_.last_name,
+    user_.city_id,
+    user_.address,
+    user_.contact_number,
   ]);
 
   // Access the 'dispatch' function to dispatch actions to the Redux store
@@ -92,12 +101,12 @@ const ProfileScreen = () => {
   return (
     <Row>
       <Col md={3}>
-        <h2>User Profile</h2>
+        <h2 style={{ color: "white" }}>User Profile</h2>
 
         {/* Create a form for updating the user's profile */}
         <Form onSubmit={submitHandler}>
           <Form.Group className="my-2" controlId="username">
-            <Form.Label> Username </Form.Label>
+            <Form.Label style={{ color: "white" }}> Username </Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter username"
@@ -107,7 +116,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="email">
-            <Form.Label>Email Address</Form.Label>
+            <Form.Label style={{ color: "white" }}>Email Address</Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter email"
@@ -117,7 +126,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label style={{ color: "white" }}>Password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Enter password"
@@ -127,7 +136,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="confirmPassword">
-            <Form.Label>Confirm Password</Form.Label>
+            <Form.Label style={{ color: "white" }}>Confirm Password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Confirm password"
@@ -137,7 +146,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="firstName">
-            <Form.Label>First Name</Form.Label>
+            <Form.Label style={{ color: "white" }}>First Name</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter First Name"
@@ -147,7 +156,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="lastName">
-            <Form.Label>Last Name</Form.Label>
+            <Form.Label style={{ color: "white" }}>Last Name</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter Last Name"
@@ -157,7 +166,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="cityId">
-            <Form.Label> City </Form.Label>
+            <Form.Label style={{ color: "white" }}> City </Form.Label>
             <Form.Control
               type="text"
               placeholder="Select City"
@@ -167,7 +176,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="address">
-            <Form.Label> Address </Form.Label>
+            <Form.Label style={{ color: "white" }}> Address </Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter address"
@@ -177,7 +186,7 @@ const ProfileScreen = () => {
           </Form.Group>
 
           <Form.Group className="my-2" controlId="contact">
-            <Form.Label> Contact Number </Form.Label>
+            <Form.Label style={{ color: "white" }}> Contact Number </Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter Contact Number"

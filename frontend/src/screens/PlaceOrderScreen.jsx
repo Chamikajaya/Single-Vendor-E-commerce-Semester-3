@@ -42,12 +42,6 @@ const PlaceOrderScreen = () => {
     navigate,
   ]);
 
-  console.log("cart", cart);
-  console.log("cartItems", cart.cartItems);
-  console.log("shippingAddress", cart.shippingAddress);
-  console.log("paymentMethod", cart.paymentMethod);
-  console.log("deliveryMethod", cart.deliveryMethod);
-
   const dispatch = useDispatch();
   const placeOrderHandler = async () => {
     try {

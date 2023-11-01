@@ -171,14 +171,22 @@ const getCityById = asyncHandler(async (req, res) => {
 // TODO: completed
 const getOrderById = asyncHandler(async (req, res) => {
   const order = (
-    await query("CALL get_order_by_order_id(?)", [
-      parseInt(req.params.order_id),
-    ])
+    await query("CALL get_order_by_order_id(?)", [parseInt(req.params.id)])
   )[0];
-  console.log(order);
   if (order) {
-    console.log("Order: ", order[0][0]);
-    res.status(201).json(order[0][0]);
+    res.status(201).json(order[0]);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+});
+
+const getOrderItems = asyncHandler(async (req, res) => {
+  const order_items = (
+    await query("CALL get_order_items(?)", [parseInt(req.params.id)])
+  )[0];
+  if (order_items) {
+    res.status(201).json(order_items);
   } else {
     res.status(404);
     throw new Error("Order not found");
@@ -188,23 +196,20 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @desc    Update the order to paid ( from false to true )
 // @route   PUT /api/orders/:id/pay
 // @access  Private
+// TODO: completed
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  // Todo: Replace this MongoDB-specific code with MySQL code for updating the order to paid
-  // Example MySQL code: const order = await db.query('UPDATE orders SET isPaid = true, paidAt = ?, paymentResult = ? WHERE order_id = ?', [Date.now(), JSON.stringify(paymentResult), req.params.id]);
-  // * Please double check this example sql query with ER diagram
+  // const order = await Order.findById(req.params.id);
+  const order = (
+    await query("CALL get_order_by_order_id(?)", [req.params.id])
+  )[0][0];
 
-  const order = await Order.findById(req.params.id);
   if (order) {
-    order.isPaid = true;
-    order.paidAt = Date.now();
-    order.paymentResult = {
-      id: req.body.id,
-      status: req.body.status,
-      update_time: req.body.update_time,
-      email_address: req.body.payer.email_address,
-    };
-    const updatedOrder = await order.save();
-    res.status(201).json(updatedOrder);
+    await query("UPDATE order SET status = ? WHERE order_id = ?", [
+      "paid",
+      req.params.id,
+    ]);
+    order.status = "paid";
+    res.status(201).json(order);
   } else {
     res.status(404);
     throw new Error("Order not found");
@@ -214,16 +219,43 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @desc    Update the order to delivered status
 // @route   PUT /api/orders/:id/deliver
 // *** @access  Private/ Admin
+// TODO:completed
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  // Todo: Replace this MongoDB-specific code with MySQL code for updating the order to paid
-  const order = await Order.findById(req.params.id);
+  let order = (
+    await query("CALL get_order_by_order_id(?)", [req.params.id])
+  )[0][0];
   if (order) {
-    order.isDelivered = true;
-    order.deliveredAt = Date.now();
+    // order.isDelivered = true;
+    // order.deliveredAt = Date.now();
+    const initialDate = Date(); // Replace with your desired date
 
-    const updatedOrder = await order.save();
+    // Calculate the number of days to add
+    const numberOfDaysToAdd = 7; // Change this to the number of days you want to add
 
-    res.status(200).json(updatedOrder);
+    // Calculate the milliseconds to add (1 day = 24 hours * 60 minutes * 60 seconds * 1000 milliseconds)
+    const millisecondsToAdd = numberOfDaysToAdd * 24 * 60 * 60 * 1000;
+
+    // Add the milliseconds to the initial Date object
+    const currentDate = new Date(initialDate.getTime() + millisecondsToAdd);
+
+    // Get year, month, and day components
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+    const day = String(currentDate.getDate()).padStart(2, "0");
+
+    // Format as 'YYYY-MM-DD'
+    const sqlFormattedDate = `${year}-${month}-${day}`;
+    const ship_id = await query("CALL create_shipping(?)", [sqlFormattedDate]);
+
+    await query(
+      "UPDATE order SET status = ?, shipping_id = ? WHERE order_id = ?",
+      ["delivered", ship_id, req.params.id]
+    );
+
+    order.status = "delivered";
+    order.shipping_id = ship_id;
+
+    res.status(200).json(order);
   } else {
     res.status(404);
     throw new Error("Order not found");
@@ -248,6 +280,7 @@ export {
   addOrderItems,
   getMyOrders,
   getOrderById,
+  getOrderItems,
   updateOrderToPaid,
   updateOrderToDelivered,
   getOrders,
