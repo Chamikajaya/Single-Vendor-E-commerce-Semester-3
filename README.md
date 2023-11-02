@@ -107,7 +107,7 @@ All Dependencies used in our project are listed below.
 ## Developer Guide
 
 ### Entity-Relationship (ER) Diagram
-![ECom_ERD](https://github.com/Chamikajaya/dbProjFinal/assets/108650897/668db001-4eed-4bd4-a5dc-c29616f1420b)
+![ECommersePlatformDB_ERD (1)](https://github.com/Chamikajaya/dbProjFinal/assets/108650897/0246e613-0222-4976-b17d-c23ddcc2a962)
 
 # Database Design
 
@@ -355,10 +355,94 @@ END;
 <br>
 
 # Transactions
+```sql
+CREATE PROCEDURE place_order(
+    IN user_id INT,
+    IN city_id INT,
+    IN payment_method_id INT,
+    IN delivery_method_id INT,
+    IN shipping_address VARCHAR(255)
+)
+BEGIN 
+	DECLARE is_out_city INT;
+    DECLARE cart_id INT;
+	DECLARE tot_price DECIMAL(10, 2);
+    DECLARE estimate DATE;
+    
+    START TRANSACTION; -- start the critical section as the transaction
+    
+    CALL get_last_cart(user_id, cart_id);
+	CALL get_cart_total(user_id, tot_price);
+    
+    SELECT orderDeliveryEstimate(city_id) INTO estimate;
+		
+	INSERT INTO shipping(shipping_date, delivery_estimate) 
+    VALUES (NOW(), estimate);
+    
+    INSERT INTO Customer_Order
+        (user_id, cart_id, city_id, payment_method_id, delivery_method_id, order_date, delivery_address, tot_price, shipping_id)
+    VALUES 
+        (user_id, cart_id, city_id, payment_method_id, delivery_method_id, NOW(), shipping_address, tot_price, last_insert_id());
 
+
+	COMMIT; -- commit the result into the database
+    
+	SELECT LAST_INSERT_ID() AS order_id;
+END$$
+```
 <br>
 
 # Triggers
+### Trigger: Orders_After_Update
+Trigger to update after an order
+```sql
+CREATE TRIGGER Orders_After_Update
+    AFTER UPDATE ON Customer_Order
+    FOR EACH ROW
+BEGIN 
+    INSERT INTO Order_Log (order_id, action, log_date)
+    VALUES (NEW.order_id, NEW.status, NOW());
+```
+
+### Trigger: Orders_After_Insert
+Trigger for place an order
+```sql
+CREATE TRIGGER Orders_After_Insert
+    AFTER INSERT ON Customer_Order
+    FOR EACH ROW
+BEGIN 
+	DECLARE cart_id INT;
+
+    INSERT INTO Order_Log (order_id, action, log_date)
+    VALUES (NEW.order_id, NEW.status, NOW());
+	
+    CALL get_last_cart(NEW.user_id, cart_id);
+    -- update the inventory
+	CALL iter_update_inventory(cart_id);
+```
+
+### Trigger: Inventory_After_Insert
+Trigger for updating inventory log when new entry inserted into the inventory
+```sql
+CREATE TRIGGER Inventory_After_Insert
+	AFTER INSERT ON Inventory
+    FOR EACH ROW
+BEGIN
+	INSERT INTO Inventory_Log (inventory_id, variant_id, changed_quantity, action, log_date)
+    VALUES (NEW.inventory_id, NEW.variant_id, NEW.quantity, "Add Items", NOW());
+```
+
+### Trigger: Inventory_After_Update
+Trigger for update the log when inventroy is updated
+
+```sql
+CREATE TRIGGER Inventory_After_Update
+	AFTER UPDATE ON Inventory
+    FOR EACH ROW
+BEGIN
+	INSERT INTO Inventory_Log (inventory_id, variant_id, changed_quantity, action, log_date)
+    VALUES (NEW.inventory_id, NEW.variant_id, NEW.quantity - OLD.quantity, "Increase Items", NOW());
+```
 
 <br>
 
@@ -404,31 +488,123 @@ BEGIN
 END
 ```
 
-4. get_all_orders
+4. update_inventory
 ```sql
-PROCEDURE `get_all_orders`()
+PROCEDURE `update_inventory`(
+    IN variant_id INT,
+    IN quantity INT
+)
 BEGIN 
-	SELECT o.user_id, u.email, o.cart_id, sp.shipping_date, sp.delivery_estimate, d.name, p.name, order_date, c.name, o.delivery_address, tot_price, status
-    FROM Customer_Order o
-    JOIN delivery_method d USING(delivery_method_id)
-    JOIN payment_method p USING(payment_method_id)
-    JOIN City c USING(city_id)
-    JOIN User_Auth u USING(user_id)
-    LEFT JOIN shipping sp USING(shipping_id)
-    ORDER BY order_date DESC;
+    UPDATE inventory i
+    SET i.quantity = i.quantity - quantity
+    WHERE i.variant_id = variant_id AND i.warehouse_id = 1;
 END
 ```
 
-5. get_attr_by_product_id
+5. `get_attr_by_product_id`
 - gets just the attributes
-6. get_attributes_by_product_id
+6. `get_attributes_by_product_id`
 - gets attribute values for a given product
-7. get_cart_items
+7. `get_cart_items`
 - gets the cart item
-8. get_cart_total
+8. `get_cart_total`
 - Calls get_last_cart and obtails the total
-9. get_categories_by_parent_id
+9. `get_categories_by_parent_id`
+10. register_customer
+```sql
+PROCEDURE `register_customer`(
+    IN username VARCHAR(255),
+    IN email VARCHAR(255),
+    IN password VARCHAR(255),
+    IN first_name VARCHAR(255),
+    IN last_name VARCHAR(255),
+    IN city_id INT,
+    IN address VARCHAR(255),
+    IN contact_number VARCHAR(255)
+)
+BEGIN
+    INSERT INTO User_Auth (username, email, password)
+    VALUES (username, email, password);
 
+    INSERT INTO Customer (user_id, first_name, last_name, city_id, address, contact_number)
+    VALUES 
+        (LAST_INSERT_ID(), first_name, last_name, city_id, address, contact_number);
+	
+    CALL add_cart(LAST_INSERT_ID());
+    
+	SELECT * FROM User_Auth WHERE user_id = LAST_INSERT_ID();
+END
+```
+
+11. place_order
+```sql
+PROCEDURE `place_order`(
+    IN user_id INT,
+    IN city_id INT,
+    IN payment_method_id INT,
+    IN delivery_method_id INT,
+    IN shipping_address VARCHAR(255)
+)
+BEGIN 
+	DECLARE is_out_city INT;
+    DECLARE cart_id INT;
+	DECLARE tot_price DECIMAL(10, 2);
+    DECLARE estimate DATE;
+    
+    START TRANSACTION; -- start the critical section as the transaction
+    
+    CALL get_last_cart(user_id, cart_id);
+	CALL get_cart_total(user_id, tot_price);
+    
+    SELECT orderDeliveryEstimate(city_id) INTO estimate;
+		
+	INSERT INTO shipping(shipping_date, delivery_estimate) 
+    VALUES (NOW(), estimate);
+    
+    INSERT INTO Customer_Order
+        (user_id, cart_id, city_id, payment_method_id, delivery_method_id, order_date, delivery_address, tot_price, shipping_id)
+    VALUES 
+        (user_id, cart_id, city_id, payment_method_id, delivery_method_id, NOW(), shipping_address, tot_price, last_insert_id());
+
+
+	COMMIT; -- commit the result into the database
+    
+	SELECT LAST_INSERT_ID() AS order_id;
+END
+```
+12. `search_product_by_keyword`
+- Search for product parameters by a keyword (strings)
+13. `ship_order`
+- Updating order status to shipped
+14. most_sold_products
+```sql
+PROCEDURE `MostSoldProducts`(yearvalue INT, monthvalue INT)
+BEGIN
+	SELECT variant_id, product_id, variant_title, price, img, sum(quantity) AS tot_sales
+	FROM customer_order
+	JOIN cart_item USING(cart_id)
+	JOIN variant USING(variant_id)
+	WHERE YEAR(order_date) = yearvalue AND MONTH(order_date) = monthvalue
+	GROUP BY variant_id
+	ORDER BY tot_sales DESC;
+END
+```
+15. most_sold_category
+```sql
+PROCEDURE `MostSoldCategory`(yearvalue INT, monthvalue INT)
+BEGIN
+	SELECT category_id, category_name, SUM(quantity)
+    FROM customer_order
+    JOIN cart_item USING(cart_id)
+    JOIN variant USING(variant_id)
+    JOIN product_category USING(product_id)
+    JOIN category USING(category_id)
+	WHERE YEAR(order_date) = yearvalue AND MONTH(order_date) = monthvalue
+	GROUP BY category_id
+    ORDER BY SUM(quantity) DESC
+    LIMIT 1;
+END
+```
 
 # Security
 ### Strategies we used to make the database secure
@@ -464,6 +640,18 @@ Instead of storing the JWT token in the user's local storage or session storage,
 HTTP Only cookies can't be accessed by JavaScript, enhancing security.
 Every subsequent request made by the user includes this cookie, ensuring they remain authenticated.
 
+![read_2](https://github.com/Chamikajaya/dbProjFinal/assets/108650897/1b9d7cb2-8704-4834-816e-54e70956e438)
+![read_3](https://github.com/Chamikajaya/dbProjFinal/assets/108650897/bfb1b238-ae57-4046-bb8d-8036621dea13)
+
+
+#### Authorization
+Roles Defined: Admins and general users.
+Route Restriction: Only admins can access specific routes.
+Access Control: Ensures data accessibility only to authorized roles.
+Reduced Vulnerabilities: Limited access reduces potential attack points.
+Data Integrity: Role-based actions maintain database consistency.
+
+
 
 # Team Members & Individual contributions:
 
@@ -483,9 +671,10 @@ Every subsequent request made by the user includes this cookie, ensuring they re
 - Drafting SQL queries 
 - Worked on the backend
 - Creating stored procedures
-  1.
-  2.
-  3.
+  1. register_customer
+  2. place_order
+  3. search_product_by_keyword
+  4. ship_order ++
 - Implementing triggers in the database
 - Creating events for the database
   1. monthly_delete_order_log_event
@@ -497,8 +686,10 @@ Every subsequent request made by the user includes this cookie, ensuring they re
 - Images for the database
 - Worked on stored procedures
   1. add_cart
-  2.
-  3.
+  2. add_cart_item
+  3. get_all_orders
+  4. update_inventory
+  5. get_cart_total ++
 - Creating transactions for the database
 - Worked on the documentation for the project
 
@@ -516,8 +707,14 @@ Every subsequent request made by the user includes this cookie, ensuring they re
 - Designed the database & ER diagram
 - Implemented the delivery module
 - Images for the database
-- Working on the delivery module
+- Indexing
+  1. index_product_name
+  2. index_user_email
+  3. index_full_text_search
+  4. index_inventory_warehouse
 - Authored functions
-  1.
-  2.
+  1. getUserRole
+  2. isStockAvailable
+  3. orderDeliveryEstimate
+  4. productDeliveryEstimate
 - Frontend UI
