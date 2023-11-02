@@ -30,7 +30,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     const cart_id = (await query("CALL get_last_cart_id(?)", [user_id]))[0][0]
       .cart_id;
 
-    // console.log("Order Cart ID: ", cart_id);
+    console.log("Order Cart ID: ", cart_id);
 
     // add the order items to the database
     for (let i = 0; i < orderItems.length; i++) {
@@ -40,7 +40,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
         orderItem.variant_id,
         orderItem.quantity,
       ]);
-      // console.log("Successfully added: Order Item: ", orderItem);
+      console.log("Successfully added: Order Item: ", orderItem);
     }
 
     // create the order in the order table
@@ -52,7 +52,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
       shippingAddress.address,
     ]);
 
-    // console.log("Successfully added: Order: ", createdOrder[0][0]);
+    console.log("Successfully added: Order: ", createdOrder[0][0]);
 
     // const createdOrder = await order.save();
 
@@ -173,8 +173,12 @@ const getOrderById = asyncHandler(async (req, res) => {
   const order = (
     await query("CALL get_order_by_order_id(?)", [parseInt(req.params.id)])
   )[0];
-  if (order) {
-    res.status(201).json(order[0]);
+
+  const order_items = (
+    await query("CALL get_order_items(?)", [parseInt(req.params.id)])
+  )[0];
+  if (order && order_items) {
+    res.status(201).json({ order: order[0], order_items });
   } else {
     res.status(404);
     throw new Error("Order not found");

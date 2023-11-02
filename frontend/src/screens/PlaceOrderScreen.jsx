@@ -62,27 +62,23 @@ const PlaceOrderScreen = () => {
     }
   };
 
-  const {
-    data: paymentMethod,
-    isLoading_1,
-    error_1,
-  } = useGetPaymentMethodQuery(cart.paymentMethod);
+  const { data: paymentMethod, isLoading_1 } = useGetPaymentMethodQuery(
+    cart.paymentMethod
+  );
 
-  const {
-    data: city,
-    isLoading_2,
-    error_2,
-  } = useGetCityQuery(cart.shippingAddress.city);
-  const {
-    data: deliveryMethod,
-    isLoading_3,
-    error_3,
-  } = useGetDeliveryMethodQuery(parseInt(cart.deliveryMethod.deliveryMethod));
+  const { data: city, isLoading_2 } = useGetCityQuery(
+    cart.shippingAddress.city
+  );
+  const { data: deliveryMethod, isLoading_3 } = useGetDeliveryMethodQuery(
+    parseInt(cart.deliveryMethod.deliveryMethod)
+  );
 
   return (
     <>
       {isLoading || isLoading_1 || isLoading_2 || isLoading_3 ? (
         <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
       ) : (
         <>
           <CheckoutSteps step1 step2 step3 step4 />
@@ -91,19 +87,25 @@ const PlaceOrderScreen = () => {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h2>Shipping</h2>
-                  <h6>
-                    <strong>Address:</strong>
-                    {cart.shippingAddress.address}
-                  </h6>
-                  <h6>
-                    <strong>City:</strong> {city.name}
-                  </h6>
-                  <h6>
-                    <strong>Zip Code:</strong> {city.zip_code}
-                  </h6>
+                  {isLoading_2 ? (
+                    "Loading..."
+                  ) : (
+                    <>
+                      <h6>
+                        <strong>Address:</strong>
+                        {cart.shippingAddress.address}
+                      </h6>
+                      <h6>
+                        <strong>City:</strong> {}
+                      </h6>
+                      <h6>
+                        <strong>Zip Code:</strong> {}
+                      </h6>
+                    </>
+                  )}
                 </ListGroup.Item>
 
-                <ListGroup.Item>
+                {/* <ListGroup.Item>
                   <h2>Payment Method</h2>
                   <strong>Method: </strong>
                   <Badge
@@ -113,7 +115,7 @@ const PlaceOrderScreen = () => {
                       padding: "0.5rem 1rem", // Adjust padding to make the badge larger
                     }}
                   >
-                    {paymentMethod.name}
+                    {isLoading_1 ? "Loading..." : { paymentMethod }}
                   </Badge>
                 </ListGroup.Item>
 
@@ -127,9 +129,9 @@ const PlaceOrderScreen = () => {
                       padding: "0.5rem 1rem", // Adjust padding to make the badge larger
                     }}
                   >
-                    {deliveryMethod.name}
+                    {isLoading_3 ? "Loading..." : { deliveryMethod }}
                   </Badge>
-                </ListGroup.Item>
+                </ListGroup.Item> */}
 
                 <ListGroup.Item>
                   <h2>Order Items</h2>

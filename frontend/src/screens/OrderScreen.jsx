@@ -24,20 +24,21 @@ import {
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
-  console.log("Order ID", orderId);
   const {
-    data: order,
-    refetch,
+    data: { order, order_items },
     isLoading,
     error,
   } = useGetOrderDetailsQuery(orderId);
-  console.log(order);
-  const {
-    data: order_items,
-    isLoading_,
-    error_,
-  } = useGetOrderItemsQuery(orderId);
-  console.log(order_items);
+  // console.log("order", order_);
+  // const { order, order_items } = order_;
+  // console.log(order);
+  // const {
+  //   data: order_items_,
+  //   refetch,
+  //   isLoading_,
+  //   error_,
+  // } = useGetOrderItemsQuery(orderId);
+  // console.log(order_items);
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
 
@@ -56,9 +57,9 @@ const OrderScreen = () => {
 
   return (
     <>
-      {isLoading || isLoading_ ? (
+      {isLoading ? (
         <Loader />
-      ) : error || error_ ? (
+      ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
         <>
@@ -104,6 +105,8 @@ const OrderScreen = () => {
                 </ListGroupItem>
                 <ListGroupItem>
                   <h2>Order Items</h2>
+                  (isLoading_ ? (
+                  <Loader />) : (
                   {order_items.length === 0 ? (
                     <Message style={{ color: "white" }}>
                       Your cart is empty
@@ -135,6 +138,7 @@ const OrderScreen = () => {
                       ))}
                     </ListGroup>
                   )}
+                  ))
                 </ListGroupItem>
               </ListGroup>
             </Col>

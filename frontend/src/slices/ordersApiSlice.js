@@ -63,7 +63,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${ORDERS_URL}/cities`,
       }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 0,
     }),
     getPaymentMethod: builder.query({
       query: (id) => ({
