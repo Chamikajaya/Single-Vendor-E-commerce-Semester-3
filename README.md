@@ -25,17 +25,21 @@ This repository encompasses the database design and implementation of a single-v
 
 - [Database Design](#Database-Design)
   
+-  [Views](#Views)
+
+-  [Events](#Events)
+
+- [Indexes](#Indexes)
+
+- [Delivery Module](#Delivery_Module)
+  
 - [Functions](#Functions)
-  
-- [Stored Procedures](#Stored-Procedures)
-  
+
 - [Transactions](#Transactions)
-  
+
 - [Triggers](#Triggers)
   
-- [Views](#Views)
-  
-- [Indexes](#Indexes)
+- [Stored Procedures](#Stored-Procedures)
   
 - [Security](#Security)
   
