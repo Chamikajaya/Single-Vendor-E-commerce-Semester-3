@@ -243,11 +243,8 @@ BEGIN
     
     SELECT isMain INTO is_out_city FROM city c WHERE c.city_id = city_id;
     
-    SELECT 
-    CASE
-		WHEN is_out_city = 0 THEN 7
-		WHEN is_city_out = 1 THEN 5
-	END AS new_date INTO estimate;
+   DECLARE new_date DATE;
+SELECT orderDeliveryEstimate(city_id) into new_date;
 		
 	INSERT INTO shipping(shipping_date, delivery_estimate) 
     VALUES (NOW(), new_date);
