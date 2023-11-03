@@ -573,11 +573,46 @@ BEGIN
 	SELECT LAST_INSERT_ID() AS order_id;
 END
 ```
-12. `search_product_by_keyword`
+12. iter_update_inventory
+```
+PROCEDURE `iter_update_inventory`(IN cart_id INT)
+BEGIN
+    DECLARE done INT;
+	DECLARE var_id INT;
+    DECLARE quantity INT;
+
+   
+	DECLARE cur CURSOR FOR
+    SELECT ci.variant_id, ci.quantity
+    FROM cart_item ci
+    WHERE ci.cart_id = cart_id;
+    
+    -- Declare handler for when no more rows to fetch
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    
+    
+    OPEN cur;
+
+    -- Start the loop
+    read_loop: LOOP
+        FETCH cur INTO var_id, quantity;
+
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+		CALL update_inventory(var_id, quantity);
+
+    END LOOP;
+
+    CLOSE cur;
+END
+```
+13. `search_product_by_keyword`
 - Search for product parameters by a keyword (strings)
-13. `ship_order`
+14. `ship_order`
 - Updating order status to shipped
-14. most_sold_products
+15. most_sold_products
 ```sql
 PROCEDURE `MostSoldProducts`(yearvalue INT, monthvalue INT)
 BEGIN
@@ -590,7 +625,7 @@ BEGIN
 	ORDER BY tot_sales DESC;
 END
 ```
-15. most_sold_category
+16. most_sold_category
 ```sql
 PROCEDURE `MostSoldCategory`(yearvalue INT, monthvalue INT)
 BEGIN
@@ -606,6 +641,7 @@ BEGIN
     LIMIT 1;
 END
 ```
+
 
 # Security
 ### Strategies we used to make the database secure
@@ -703,6 +739,7 @@ Data Integrity: Role-based actions maintain database consistency.
 - Authored views
   1. customer_view
   2. admin_view
+  3. item_details 
 
 ### **M.S Gamage: 210176F**
 - Designed the database & ER diagram
