@@ -584,7 +584,7 @@ END
 ```sql
 PROCEDURE `MostSoldProducts`(yearvalue INT, monthvalue INT)
 BEGIN
-	SELECT variant_id, product_id, variant_title, price, img, sum(quantity) AS tot_sales
+	SELECT variant_id, product_id, variant_title, price, sum(quantity) AS tot_sales
 	FROM customer_order
 	JOIN cart_item USING(cart_id)
 	JOIN variant USING(variant_id)
